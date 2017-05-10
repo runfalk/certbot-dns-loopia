@@ -8,6 +8,7 @@ This allows automatic completion of `Certbot's
 Installing
 ----------
 .. code-block::
+
    $ pip install certbot-loopia
 
 
