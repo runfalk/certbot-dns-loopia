@@ -3,7 +3,7 @@ import itertools
 import re
 import zope.interface
 
-from certbot.plugins.dns_common import base_domain_name_guesses, DNSAuthenticator
+from certbot.plugins.dns_common import DNSAuthenticator
 from certbot.interfaces import IAuthenticator, IPluginFactory
 from datetime import datetime, timedelta
 from loopialib import DnsRecord, Loopia, split_domain
@@ -19,7 +19,7 @@ class LoopiaAuthenticator(DNSAuthenticator):
     """
     Loopia DNS ACME authenticator.
 
-    Super!
+    This Authenticator uses the Loopia API to fulfill a dns-01 challenge.
     """
 
     #: Short description of plugin

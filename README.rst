@@ -19,7 +19,7 @@ To use the authenticator you need to provide some required options:
   INI file with ``user`` and ``password`` for your Loopia API user. ``user``
   normally has the format ``user@loopiaapi``.
 
-The credential file must have the folling format:
+The credentials file must have the folling format:
 
 .. code-block::
 
