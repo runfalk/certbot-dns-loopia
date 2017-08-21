@@ -1,8 +1,7 @@
 Loopia DNS Authenticator for Certbot
 ====================================
-This allows automatic completion of `Certbot's
-<https://github.com/certbot/certbot>` DNS01 challange for domains managed on
-`Loopia <https://www.loopia.se/>` DNS.
+This allows automatic completion of `Certbot's <https://github.com/certbot/certbot>`_
+DNS01 challange for domains managed on `Loopia <https://www.loopia.se/>`_ DNS.
 
 
 Installing
@@ -14,46 +13,53 @@ Installing
 
 Usage
 -----
-To use the authenticator you need to provide some required options.
+To use the authenticator you need to provide some required options:
 
-``--certbot-loopia:auth-user <user>`` *(required)*
-  API username for Loopia.
-``--certbot-loopia:auth-password <password>`` *(required)*
-  API password for Loopia.
+``--certbot-loopia:credentials`` *(required)*
+  INI file with ``user`` and ``password`` for your Loopia API user. ``user``
+  normally has the format ``user@loopiaapi``.
 
-There are also some optional arguments:
+The credential file must have the folling format:
 
-``--certbot-loopia:auth-time-limit <time>``
-  Time limit for local verification. This is the maximum time the authenticator
-  will try to self-verify before declaring that the DNS update was unsuccessful.
-  Default: ``30m``.
-``--certbot-loopia:auth-time-delay <time>``
-  Time delay before first trying to self-verify the result of authentication.
-  It is recommended to have a delay of at least 30 seconds to prevent the DNS
-  server from caching that there are no TXT records for the challenge subdomain.
-  Default: ``1m``.
-``--certbot-loopia:auth-retry-interval <time>``
-  How frequently to retry self-verification. This is time past since the start
-  of the previous verification. It is not recommended to choose values smaller
-  than 10 seconds. Default: ``30s``.
+.. code-block::
 
-The format of ``<time>`` is ``AdBhCmDs`` where: ``A``is days, ``B``is hours,
-``C``is minutes and ``D`` is seconds. Note that ``A``, ``B``, ``C`` and ``D``
-must be integers. The units ``d``, ``h`` and ``m`` are required while ``s`` is
-optional. Any value-unit pair may be omitted, but they must be ordered from most
-to least significant unit. Examples of valid ``<time>`` expressions are:
+   certbot_loopia:auth_user = user@loopiaapi
+   certbot_loopia:auth_password = passwordgoeshere
 
-- ``42`` or ``42s`` for 42 seconds
-- ``1m30s`` or ``1m30`` for 1.5 minutes
-- ``1h`` for 1 hour
-- ``1d12h`` for 1.5 days
+For safety reasons the file must not be world readable. You can solve this by
+running:
+
+.. code-block::
+
+   $ chmod 600 credentials.ini
 
 
 Known issues
 ------------
 - Due to caching on Loopia's side it can take up to 15 minutes before changes
-  are visible. The plugin will by default retry self-verification for at least
-  30 minutes before sending the actual verification request to the ACME server.
+  propagates. Therefore the plugin will wait 15 minutes before contacting the
+  ACME server.
+
+
+Changelog
+---------
+
+Version 0.2.0
+~~~~~~~~~~~~~
+Released 21st August 2017
+
+- Rewrote plugin to match the implementation of ``certbot-dns-*`` plugins
+- Updated dependency requirements since the old release was completely broken
+  for newer ``acme`` and ``certbot``
+  (see `issue #2 <https://github.com/runfalk/certbot-loopia/issues/2>`_)
+
+
+Version 0.1.0
+~~~~~~~~~~~~~
+Released 10th May 2017
+
+- Initial release
+
 
 Disclaimer
 ----------

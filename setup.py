@@ -9,7 +9,7 @@ except:
 
 setup(
     name="certbot-loopia",
-    version="0.1.0",
+    version="0.2.0",
     description="Loopia DNS authentication plugin for Certbot",
     long_description=long_desc,
     license="BSD",
@@ -18,10 +18,10 @@ setup(
     url="https://www.github.com/runfalk/certbot-loopia",
     py_modules=["certbot_loopia"],
     install_requires=[
-        "acme",
-        "certbot",
-        "loopialib",
-        "zope.interface",
+        "acme>=0.17.0",
+        "certbot>=0.17.0",
+        "loopialib>=0.2.0",
+        "zope.interface>=4.4.0",
     ],
     entry_points={
         "certbot.plugins": [
