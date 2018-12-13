@@ -33,6 +33,19 @@ running:
 
    $ chmod 600 credentials.ini
 
+Then you can run ``certbot`` using:
+
+.. code-block::
+
+    $ certbot certonly \
+        --authenticator certbot-loopia:auth \
+        --certbot-loopia:auth-credentials credentials.ini \
+        -d domain.com
+
+If you want to obtain a wildcard certificate you can use the
+``--server https://acme-v02.api.letsencrypt.org/directory`` flag and the domain
+``-d *.domain.com``.
+
 
 Known issues
 ------------
