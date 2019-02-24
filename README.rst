@@ -8,11 +8,21 @@ Installing
 ----------
 .. code-block::
 
-   $ pip install certbot-loopia
+   $ sudo pip install certbot-loopia
 
+Note that you should normally install this as ``root``, unless you know what
+you are doing.
 
 Usage
 -----
+The plugin requires the following permissions enabled for your Loopia API user:
+
+- addSubdomain (I can't test if it's required)
+- addZoneRecord
+- getZoneRecords
+- removeSubdomain
+- removeZoneRecord
+
 To use the authenticator you need to provide some required options:
 
 ``--certbot-loopia:credentials`` *(required)*
@@ -37,7 +47,7 @@ Then you can run ``certbot`` using:
 
 .. code-block::
 
-    $ certbot certonly \
+    $ sudo certbot certonly \
         --authenticator certbot-loopia:auth \
         --certbot-loopia:auth-credentials credentials.ini \
         -d domain.com
