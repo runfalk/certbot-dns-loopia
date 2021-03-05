@@ -12,6 +12,8 @@ from time import sleep
 
 logger = logging.getLogger(__name__)
 
+DEFAULT_PROPAGATION = 90 # time in seconds to wait before validation should occur
+DEFAULT_TTL = 30 # default TTL for the DNS record in seconds
 
 @zope.interface.implementer(IAuthenticator)
 @zope.interface.provider(IPluginFactory)
@@ -26,7 +28,7 @@ class LoopiaAuthenticator(DNSAuthenticator):
     description = __doc__.strip().split("\n", 1)[0]
 
     #: TTL for the validation TXT record
-    ttl = 30
+    ttl = DEFAULT_TTL
 
     def __init__(self, *args, **kwargs):
         super(LoopiaAuthenticator, self).__init__(*args, **kwargs)
@@ -34,7 +36,7 @@ class LoopiaAuthenticator(DNSAuthenticator):
         self.credentials = None
 
     @classmethod
-    def add_parser_arguments(cls, add, default_propagation_seconds=15 * 60):
+    def add_parser_arguments(cls, add, default_propagation_seconds=DEFAULT_PROPAGATION):
         super(LoopiaAuthenticator, cls).add_parser_arguments(
             add, default_propagation_seconds)
         add("credentials", help="Loopia API credentials INI file.")
@@ -62,6 +64,7 @@ class LoopiaAuthenticator(DNSAuthenticator):
             self.credentials.conf("user"),
             self.credentials.conf("password"))
 
+
     def _perform(self, domain, validation_name, validation):
         loopia = self._get_loopia_client()
         domain_parts = split_domain(validation_name)
@@ -71,6 +74,7 @@ class LoopiaAuthenticator(DNSAuthenticator):
         logger.debug(
             "Creating TXT record for {} on subdomain {}".format(*domain_parts))
         loopia.add_zone_record(dns_record, *domain_parts)
+
 
     def _cleanup(self, domain, validation_name, validation):
         loopia = self._get_loopia_client()
