@@ -1,2 +1,8 @@
+.vscode/
 *.pyc
 *.egg-info
+build/
+dist/
+tmp/
+venv/
+credentials.ini

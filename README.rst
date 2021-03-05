@@ -8,7 +8,7 @@ Installing
 ----------
 .. code-block::
 
-   $ sudo pip install certbot-loopia
+   $ sudo pip install certbot-dns-loopia
 
 Note that you should normally install this as ``root``, unless you know what
 you are doing.
@@ -25,7 +25,7 @@ The plugin requires the following permissions enabled for your Loopia API user:
 
 To use the authenticator you need to provide some required options:
 
-``--certbot-loopia:credentials`` *(required)*
+``--dns-loopia:credentials`` *(required)*
   INI file with ``user`` and ``password`` for your Loopia API user. ``user``
   normally has the format ``user@loopiaapi``.
 
@@ -33,8 +33,8 @@ The credentials file must have the folling format:
 
 .. code-block::
 
-   certbot_loopia:auth_user = user@loopiaapi
-   certbot_loopia:auth_password = passwordgoeshere
+   dns_loopia:auth_user = user@loopiaapi
+   dns_loopia:auth_password = passwordgoeshere
 
 For safety reasons the file must not be world readable. You can solve this by
 running:
@@ -48,12 +48,11 @@ Then you can run ``certbot`` using:
 .. code-block::
 
     $ sudo certbot certonly \
-        --authenticator certbot-loopia:auth \
-        --certbot-loopia:auth-credentials credentials.ini \
+        --authenticator dns-loopia:auth \
+        --dns-loopia-credentials credentials.ini \
         -d domain.com
 
-If you want to obtain a wildcard certificate you can use the
-``--server https://acme-v02.api.letsencrypt.org/directory`` flag and the domain
+If you want to obtain a wildcard certificate you can use the domain
 ``-d *.domain.com``.
 
 
@@ -66,6 +65,16 @@ Known issues
 
 Changelog
 ---------
+Version 1.0.0
+~~~~~~~~~~~~~
+Released 5th March 2021
+
+**This is a breaking change. The CLI arguments and the name of the package has
+changed to match other DNS authenticator plugins.**
+
+- Updated name to `certbot-dns-loopia` to match other DNS plugins
+- Dropped Python < 3.6 support
+
 
 Version 0.2.0
 ~~~~~~~~~~~~~
