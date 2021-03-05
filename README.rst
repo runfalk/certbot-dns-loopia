@@ -33,8 +33,8 @@ The credentials file must have the folling format:
 
 .. code-block::
 
-   dns_loopia:auth_user = user@loopiaapi
-   dns_loopia:auth_password = passwordgoeshere
+   dns_loopia_user = user@loopiaapi
+   dns_loopia_password = passwordgoeshere
 
 For safety reasons the file must not be world readable. You can solve this by
 running:
