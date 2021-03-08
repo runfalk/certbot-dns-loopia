@@ -3,9 +3,10 @@ from setuptools import setup
 
 try:
     long_desc = open("README.rst").read()
-except:
+except FileNotFoundError:
     print("Skipping README.rst for long description as it was not found")
     long_desc = None
+
 
 setup(
     name="certbot-dns-loopia",
@@ -43,6 +44,7 @@ setup(
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
         "Topic :: Internet :: Name Service (DNS)",
         "Topic :: System :: Systems Administration",
         "Topic :: Utilities",

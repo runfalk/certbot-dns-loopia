@@ -48,7 +48,7 @@ Then you can run ``certbot`` using:
 .. code-block::
 
     $ sudo certbot certonly \
-        --authenticator dns-loopia:auth \
+        --authenticator dns-loopia \
         --dns-loopia-credentials credentials.ini \
         -d domain.com
 
@@ -61,6 +61,10 @@ Known issues
 - Due to caching on Loopia's side it can take up to 15 minutes before changes
   propagates. Therefore the plugin will wait 15 minutes before contacting the
   ACME server.
+  It has been known to work with as little as 90 seconds and sometimes less
+  and if you want to try something other than 15 minutes then add 
+  ``--dns-loopia-propagation-seconds 90`` to parameters for 90 seconds or
+  how many seconds you want.
 
 
 Changelog

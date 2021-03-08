@@ -1,6 +1,7 @@
 import pytest
-from certbot_dns_loopia import LoopiaAuthenticator, DnsRecord, DEFAULT_TTL, split_domain
+from certbot_dns_loopia import LoopiaAuthenticator, DnsRecord, split_domain
 from unittest.mock import MagicMock
+
 
 # This config just sets all parameters to some value. It's just to make sure
 # that the DNSAuthenticator constructor has all the parameters it might need
@@ -19,6 +20,7 @@ class LoopiaTestAuthenticator(LoopiaAuthenticator):
     def __init__(self, client):
         super().__init__(config=PluginConfig, name="dns-loopia")
         self._test_client = client
+
     def _get_loopia_client(self):
         return self._test_client
 
@@ -29,7 +31,8 @@ class test_perform_cleanup_cycle():
     validation_key = "thisgoesinthetetxtrecord"
     domain_parts = split_domain(validation_domain)
 
-    dns_record = DnsRecord("TXT", ttl=DEFAULT_TTL, data=validation_key)
+    dns_record = DnsRecord("TXT", ttl=LoopiaAuthenticator.ttl,
+                           data=validation_key)
 
     loopia_mock = MagicMock()
 
@@ -53,7 +56,7 @@ class test_perform_cleanup_cycle():
         domain_parts[0],
         domain_parts[1],
     )
-    # loopia_mock.remove_subdomain.assert_called_with(
-    #     domain_parts[0],
-    #     domain_parts[1],
-    # )
+    loopia_mock.remove_subdomain.assert_called_with(
+        domain_parts[0],
+        domain_parts[1],
+    )

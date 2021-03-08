@@ -14,4 +14,5 @@ certbot certonly \
     --dry-run \
     --authenticator dns-loopia \
     --dns-loopia-credentials credentials.ini \
+    --dns-loopia-propagation-seconds 60 \
     -d $1

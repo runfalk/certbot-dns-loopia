@@ -12,8 +12,6 @@ from time import sleep
 
 logger = logging.getLogger(__name__)
 
-DEFAULT_PROPAGATION = 90 # time in seconds to wait before validation should occur
-DEFAULT_TTL = 30 # default TTL for the DNS record in seconds
 
 @zope.interface.implementer(IAuthenticator)
 @zope.interface.provider(IPluginFactory)
@@ -28,7 +26,7 @@ class LoopiaAuthenticator(DNSAuthenticator):
     description = __doc__.strip().split("\n", 1)[0]
 
     #: TTL for the validation TXT record
-    ttl = DEFAULT_TTL
+    ttl = 30
 
     def __init__(self, *args, **kwargs):
         super(LoopiaAuthenticator, self).__init__(*args, **kwargs)
@@ -36,11 +34,10 @@ class LoopiaAuthenticator(DNSAuthenticator):
         self.credentials = None
 
     @classmethod
-    def add_parser_arguments(cls, add, default_propagation_seconds=DEFAULT_PROPAGATION):
+    def add_parser_arguments(cls, add, default_propagation_seconds=15*60):
         super(LoopiaAuthenticator, cls).add_parser_arguments(
             add, default_propagation_seconds)
         add("credentials", help="Loopia API credentials INI file.")
-
 
     def more_info(self):
         """
@@ -64,7 +61,6 @@ class LoopiaAuthenticator(DNSAuthenticator):
             self.credentials.conf("user"),
             self.credentials.conf("password"))
 
-
     def _perform(self, domain, validation_name, validation):
         loopia = self._get_loopia_client()
         domain_parts = split_domain(validation_name)
@@ -75,7 +71,6 @@ class LoopiaAuthenticator(DNSAuthenticator):
             "Creating TXT record for {} on subdomain {}".format(*domain_parts))
         loopia.add_zone_record(dns_record, *domain_parts)
 
-
     def _cleanup(self, domain, validation_name, validation):
         loopia = self._get_loopia_client()
         domain_parts = split_domain(validation_name)
@@ -84,7 +79,7 @@ class LoopiaAuthenticator(DNSAuthenticator):
         records = loopia.get_zone_records(*domain_parts)
         delete_subdomain = True
         for record in records:
-            # Make sure the record we delete actually matches the one we created
+            # Make sure the record we delete actually matches the created
             if dns_record.replace(id=record.id) == record:
                 logger.debug("Removing zone record {}".format(record))
                 loopia.remove_zone_record(record.id, *domain_parts)
