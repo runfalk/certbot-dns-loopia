@@ -25,7 +25,7 @@ The plugin requires the following permissions enabled for your Loopia API user:
 
 To use the authenticator you need to provide some required options:
 
-``--dns-loopia:credentials`` *(required)*
+``--dns-loopia-credentials`` *(required)*
   INI file with ``user`` and ``password`` for your Loopia API user. ``user``
   normally has the format ``user@loopiaapi``.
 
