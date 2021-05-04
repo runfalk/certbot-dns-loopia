@@ -34,11 +34,10 @@ class LoopiaAuthenticator(DNSAuthenticator):
         self.credentials = None
 
     @classmethod
-    def add_parser_arguments(cls, add, default_propagation_seconds=15 * 60):
+    def add_parser_arguments(cls, add, default_propagation_seconds=15*60):
         super(LoopiaAuthenticator, cls).add_parser_arguments(
             add, default_propagation_seconds)
         add("credentials", help="Loopia API credentials INI file.")
-
 
     def more_info(self):
         """
@@ -80,7 +79,7 @@ class LoopiaAuthenticator(DNSAuthenticator):
         records = loopia.get_zone_records(*domain_parts)
         delete_subdomain = True
         for record in records:
-            # Make sure the record we delete actually matches the one we created
+            # Make sure the record we delete actually matches the created
             if dns_record.replace(id=record.id) == record:
                 logger.debug("Removing zone record {}".format(record))
                 loopia.remove_zone_record(record.id, *domain_parts)
