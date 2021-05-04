@@ -25,7 +25,7 @@ class LoopiaTestAuthenticator(LoopiaAuthenticator):
         return self._test_client
 
 
-class test_perform_cleanup_cycle():
+def test_perform_cleanup_cycle():
     domain = "*.runfalk.se"  # Unused
     validation_domain = "_acme-challenge.runfalk.se"
     validation_key = "thisgoesinthetetxtrecord"

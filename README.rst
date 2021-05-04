@@ -62,7 +62,7 @@ Known issues
   propagates. Therefore the plugin will wait 15 minutes before contacting the
   ACME server.
   It has been known to work with as little as 90 seconds and sometimes less
-  and if you want to try something other than 15 minutes then add 
+  and if you want to try something other than 15 minutes then add
   ``--dns-loopia-propagation-seconds 90`` to parameters for 90 seconds or
   how many seconds you want.
 
@@ -71,10 +71,13 @@ Changelog
 ---------
 Version 1.0.0
 ~~~~~~~~~~~~~
-Released 5th March 2021
+Released 4th May 2021
 
 **This is a breaking change. The CLI arguments and the name of the package has
 changed to match other DNS authenticator plugins.**
+
+Thank you Peter Magnusson (`@kmpm <https://github.com/kmpm>`_) for contributing
+this change!
 
 - Updated name to `certbot-dns-loopia` to match other DNS plugins
 - Dropped Python < 3.6 support
@@ -87,7 +90,7 @@ Released 21st August 2017
 - Rewrote plugin to match the implementation of ``certbot-dns-*`` plugins
 - Updated dependency requirements since the old release was completely broken
   for newer ``acme`` and ``certbot``
-  (see `issue #2 <https://github.com/runfalk/certbot-loopia/issues/2>`_)
+  (see `issue #2 <https://github.com/runfalk/certbot-dns-loopia/issues/2>`_)
 
 
 Version 0.1.0
