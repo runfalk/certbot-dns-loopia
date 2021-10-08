@@ -13,6 +13,7 @@ Installing
 Via snap (requires certbot to be installed via snap)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 .. code-block::
+
    $ sudo snap install certbot-dns-loopia
    $ sudo snap set certbot trust-plugin-with-root=ok
    $ sudo snap connect certbot:plugin certbot-dns-loopia
