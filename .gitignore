@@ -8,3 +8,4 @@ venv/
 credentials.ini
 .idea
 *.iml
+*.snap
