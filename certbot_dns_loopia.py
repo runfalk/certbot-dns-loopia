@@ -1,14 +1,12 @@
+"""
+Contains the Loopia DNS ACME authenticator class.
+"""
 import logging
-import itertools
-import re
+
 import zope.interface
-
-from certbot.plugins.dns_common import DNSAuthenticator
 from certbot.interfaces import IAuthenticator, IPluginFactory
-from datetime import datetime, timedelta
+from certbot.plugins.dns_common import DNSAuthenticator
 from loopialib import DnsRecord, Loopia, split_domain
-from time import sleep
-
 
 logger = logging.getLogger(__name__)
 
@@ -29,7 +27,7 @@ class LoopiaAuthenticator(DNSAuthenticator):
     ttl = 30
 
     def __init__(self, *args, **kwargs):
-        super(LoopiaAuthenticator, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self._client = None
         self.credentials = None
 
@@ -67,8 +65,9 @@ class LoopiaAuthenticator(DNSAuthenticator):
 
         dns_record = DnsRecord("TXT", ttl=self.ttl, data=validation)
 
-        logger.debug(
-            "Creating TXT record for {} on subdomain {}".format(*domain_parts))
+        msg = "Creating TXT record for %s on subdomain %s"
+        logger.debug(msg, *domain_parts)
+
         loopia.add_zone_record(dns_record, *domain_parts)
 
     def _cleanup(self, domain, validation_name, validation):
@@ -81,7 +80,7 @@ class LoopiaAuthenticator(DNSAuthenticator):
         for record in records:
             # Make sure the record we delete actually matches the created
             if dns_record.replace(id=record.id) == record:
-                logger.debug("Removing zone record {}".format(record))
+                logger.debug("Removing zone record %s", record)
                 loopia.remove_zone_record(record.id, *domain_parts)
             else:
                 # This happens if there are other zone records on the current
@@ -89,10 +88,10 @@ class LoopiaAuthenticator(DNSAuthenticator):
                 delete_subdomain = False
 
                 msg = "Record {} prevents the subdomain from being deleted"
-                logger.debug(msg.format(record))
+                logger.debug(msg, record)
 
         # Delete subdomain if we emptied it completely
         if delete_subdomain:
-            msg = "Removing subdomain {1} on subdomain {0}"
-            logger.debug(msg.format(*domain_parts))
+            msg = "Removing subdomain %s on subdomain %s"
+            logger.debug(msg, domain_parts[1], domain_parts[0])
             loopia.remove_subdomain(*domain_parts)

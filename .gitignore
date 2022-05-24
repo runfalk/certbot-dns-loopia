@@ -6,3 +6,5 @@ dist/
 tmp/
 venv/
 credentials.ini
+.idea
+*.iml

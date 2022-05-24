@@ -28,6 +28,7 @@ setup(
         "dev": [
             "pytest",
             "wheel",
+            "pylint>=2.13.9",
         ],
     },
     entry_points={
