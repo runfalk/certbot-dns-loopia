@@ -17,7 +17,6 @@ Usage
 -----
 The plugin requires the following permissions enabled for your Loopia API user:
 
-- addSubdomain (I can't test if it's required)
 - addZoneRecord
 - getZoneRecords
 - removeSubdomain
