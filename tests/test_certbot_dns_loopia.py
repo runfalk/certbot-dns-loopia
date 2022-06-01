@@ -2,8 +2,11 @@
 Tests for certbot-dns-loopia
 """
 # pylint: disable=protected-access,too-few-public-methods
+
 from unittest.mock import MagicMock
 from certbot_dns_loopia import LoopiaAuthenticator, DnsRecord, split_domain
+
+from certbot_dns_loopia import LoopiaAuthenticator, DnsRecord, TLDExtract
 
 
 # This config just sets all parameters to some value. It's just to make sure
@@ -41,10 +44,15 @@ def test_perform_cleanup_cycle():
     domain = "*.runfalk.se"  # Unused
     validation_domain = "_acme-challenge.runfalk.se"
     validation_key = "thisgoesinthetetxtrecord"
-    domain_parts = split_domain(validation_domain)
 
-    dns_record = DnsRecord("TXT", ttl=LoopiaAuthenticator.ttl,
-                           data=validation_key)
+    tld_extract = TLDExtract(suffix_list_urls=())
+    domain_parts = tld_extract(validation_domain)
+
+    dns_record = DnsRecord(
+        "TXT",
+        ttl=LoopiaAuthenticator.ttl,
+        data=validation_key
+    )
 
     loopia_mock = MagicMock()
 
@@ -53,9 +61,9 @@ def test_perform_cleanup_cycle():
     auth._perform(domain, validation_domain, validation_key)
 
     loopia_mock.add_zone_record.assert_called_with(
-        dns_record,
-        domain_parts[0],
-        domain_parts[1]
+        record=dns_record,
+        domain=domain_parts.registered_domain,
+        subdomain=domain_parts.subdomain,
     )
     record_id = 20200305
     loopia_mock.get_zone_records.return_value = [
@@ -64,11 +72,11 @@ def test_perform_cleanup_cycle():
     auth._cleanup(domain, validation_domain, validation_key)
 
     loopia_mock.remove_zone_record.assert_called_with(
-        record_id,
-        domain_parts[0],
-        domain_parts[1],
+        id=record_id,
+        domain=domain_parts.registered_domain,
+        subdomain=domain_parts.subdomain,
     )
     loopia_mock.remove_subdomain.assert_called_with(
-        domain_parts[0],
-        domain_parts[1],
+        domain=domain_parts.registered_domain,
+        subdomain=domain_parts.subdomain,
     )
