@@ -1,3 +1,6 @@
+.. image:: https://github.com/runfalk/certbot-dns-loopia/actions/workflows/lint.yml/badge.svg
+  :alt: Pylint
+
 Loopia DNS Authenticator for Certbot
 ====================================
 This allows automatic completion of `Certbot's <https://github.com/certbot/certbot>`_
