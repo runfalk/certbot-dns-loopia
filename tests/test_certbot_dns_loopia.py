@@ -1,11 +1,17 @@
-import pytest
-from certbot_dns_loopia import LoopiaAuthenticator, DnsRecord, split_domain
+"""
+Tests for certbot-dns-loopia
+"""
+# pylint: disable=protected-access,too-few-public-methods
 from unittest.mock import MagicMock
+from certbot_dns_loopia import LoopiaAuthenticator, DnsRecord, split_domain
 
 
 # This config just sets all parameters to some value. It's just to make sure
 # that the DNSAuthenticator constructor has all the parameters it might need
 class PluginConfig:
+    """
+    PluginConfig with test variables
+    """
     verb = "certonly"
     config_dir = "/tmp/cfg"
     work_dir = "/tmp/work"
@@ -17,6 +23,9 @@ class PluginConfig:
 
 
 class LoopiaTestAuthenticator(LoopiaAuthenticator):
+    """
+    Testing using mock objects
+    """
     def __init__(self, client):
         super().__init__(config=PluginConfig, name="dns-loopia")
         self._test_client = client
@@ -26,6 +35,9 @@ class LoopiaTestAuthenticator(LoopiaAuthenticator):
 
 
 def test_perform_cleanup_cycle():
+    """
+    performs a full cycle including cleanup
+    """
     domain = "*.runfalk.se"  # Unused
     validation_domain = "_acme-challenge.runfalk.se"
     validation_key = "thisgoesinthetetxtrecord"
