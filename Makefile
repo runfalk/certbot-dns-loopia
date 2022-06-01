@@ -12,4 +12,4 @@ test:
 	pytest 
 
 livetest:
-	./test.sh $(TESTHOST)
+	./scripts/test.sh $(TESTHOST)
