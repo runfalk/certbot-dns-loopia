@@ -1,5 +1,5 @@
-.. image:: https://github.com/runfalk/certbot-dns-loopia/actions/workflows/lint.yml/badge.svg
-  :alt: Pylint
+.. image:: https://github.com/runfalk/certbot-dns-loopia/actions/workflows/test.yml/badge.svg
+  :alt: Test
 
 Loopia DNS Authenticator for Certbot
 ====================================
