@@ -22,7 +22,6 @@ setup(
         "acme>=1.8.0",
         "certbot>=1.7.0",
         "loopialib>=0.2.0",
-        "zope.interface>=4.4.0",
     ],
     extras_require={
         "dev": [

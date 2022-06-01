@@ -3,16 +3,12 @@ Contains the Loopia DNS ACME authenticator class.
 """
 import logging
 
-import zope.interface
-from certbot.interfaces import IAuthenticator, IPluginFactory
 from certbot.plugins.dns_common import DNSAuthenticator
 from loopialib import DnsRecord, Loopia, split_domain
 
 logger = logging.getLogger(__name__)
 
 
-@zope.interface.implementer(IAuthenticator)
-@zope.interface.provider(IPluginFactory)
 class LoopiaAuthenticator(DNSAuthenticator):
     """
     Loopia DNS ACME authenticator.
