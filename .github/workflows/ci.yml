@@ -1,4 +1,5 @@
-name: Pylint
+---
+name: CI
 
 on: [ push ]
 
@@ -25,3 +26,6 @@ jobs:
       - name: Analysing the code with pylint
         run: |
           make lint
+      - name: Running pytest
+        run: |
+          make test
