@@ -4,8 +4,6 @@ Tests for certbot-dns-loopia
 # pylint: disable=protected-access,too-few-public-methods
 
 from unittest.mock import MagicMock
-from certbot_dns_loopia import LoopiaAuthenticator, DnsRecord, split_domain
-
 from certbot_dns_loopia import LoopiaAuthenticator, DnsRecord, TLDExtract
 
 
