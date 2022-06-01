@@ -23,6 +23,7 @@ setup(
         "acme>=1.8.0",
         "certbot>=1.7.0",
         "loopialib>=0.2.0",
+        "tldextract>=3.3.0",
     ],
     extras_require={
         "dev": [

@@ -3,8 +3,9 @@ Contains the Loopia DNS ACME authenticator class.
 """
 import logging
 
+from tldextract import TLDExtract
 from certbot.plugins.dns_common import DNSAuthenticator
-from loopialib import DnsRecord, Loopia, split_domain
+from loopialib import DnsRecord, Loopia
 
 logger = logging.getLogger(__name__)
 
@@ -26,6 +27,10 @@ class LoopiaAuthenticator(DNSAuthenticator):
         super().__init__(*args, **kwargs)
         self._client = None
         self.credentials = None
+
+        # Use empty tuple for param to prevent tldextract from performing live
+        # HTTP request to update the TLD list
+        self._tld_extract = TLDExtract(suffix_list_urls=())
 
     @classmethod
     def add_parser_arguments(cls, add, default_propagation_seconds=15*60):
@@ -57,27 +62,39 @@ class LoopiaAuthenticator(DNSAuthenticator):
 
     def _perform(self, domain, validation_name, validation):
         loopia = self._get_loopia_client()
-        domain_parts = split_domain(validation_name)
+        domain_parts = self._tld_extract(validation_name)
 
         dns_record = DnsRecord("TXT", ttl=self.ttl, data=validation)
 
         msg = "Creating TXT record for %s on subdomain %s"
-        logger.debug(msg, *domain_parts)
+        logger.debug(msg, domain_parts.registered_domain, domain_parts.subdomain)
 
-        loopia.add_zone_record(dns_record, *domain_parts)
+        loopia.add_zone_record(
+            record=dns_record,
+            domain=domain_parts.registered_domain,
+            subdomain=domain_parts.subdomain or None,
+        )
 
     def _cleanup(self, domain, validation_name, validation):
         loopia = self._get_loopia_client()
-        domain_parts = split_domain(validation_name)
+        domain_parts = self._tld_extract(validation_name)
         dns_record = DnsRecord("TXT", ttl=self.ttl, data=validation)
 
-        records = loopia.get_zone_records(*domain_parts)
+        records = loopia.get_zone_records(
+            domain=domain_parts.registered_domain,
+            subdomain=domain_parts.subdomain or None,
+        )
+
         delete_subdomain = True
         for record in records:
             # Make sure the record we delete actually matches the created
             if dns_record.replace(id=record.id) == record:
                 logger.debug("Removing zone record %s", record)
-                loopia.remove_zone_record(record.id, *domain_parts)
+                loopia.remove_zone_record(
+                    id=record.id,
+                    domain=domain_parts.registered_domain,
+                    subdomain=domain_parts.subdomain or None,
+                )
             else:
                 # This happens if there are other zone records on the current
                 # sub domain.
@@ -90,4 +107,7 @@ class LoopiaAuthenticator(DNSAuthenticator):
         if delete_subdomain:
             msg = "Removing subdomain %s on subdomain %s"
             logger.debug(msg, domain_parts[1], domain_parts[0])
-            loopia.remove_subdomain(*domain_parts)
+            loopia.remove_subdomain(
+                domain=domain_parts.registered_domain,
+                subdomain=domain_parts.subdomain,
+            )
