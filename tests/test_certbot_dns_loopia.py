@@ -36,7 +36,7 @@ class LoopiaTestAuthenticator(LoopiaAuthenticator):
 
 def test_perform_cleanup_cycle():
     """
-    performs a full cycle including cleanup
+    Performs a full cycle including cleanup
     """
     domain = "*.runfalk.se"  # Unused
     validation_domain = "_acme-challenge.runfalk.se"
