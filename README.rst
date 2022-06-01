@@ -9,9 +9,24 @@ DNS01 challange for domains managed on `Loopia <https://www.loopia.se/>`_ DNS.
 
 Installing
 ----------
+
+Via snap (requires certbot to be installed via snap)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 .. code-block::
 
-   $ sudo pip install certbot-dns-loopia
+   $ sudo snap install certbot-dns-loopia
+   $ sudo snap set certbot trust-plugin-with-root=ok
+   $ sudo snap connect certbot:plugin certbot-dns-loopia
+   $ sudo snap connect certbot-dns-loopia:certbot-metadata certbot:certbot-metadata
+
+
+
+
+Via pip3
+~~~~~~~~
+.. code-block::
+
+   $ sudo pip3 install certbot-dns-loopia
 
 Note that you should normally install this as ``root``, unless you know what
 you are doing.

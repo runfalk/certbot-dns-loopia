@@ -1,16 +1,36 @@
+import os
 from setuptools import setup
 
 
-try:
-    long_desc = open("README.rst").read()
-except FileNotFoundError:
-    print("Skipping README.rst for long description as it was not found")
-    long_desc = None
+version = '1.0.1'
+cb_required = '1.8.0'
+
+install_requires = [
+    'loopialib>=0.2.0',
+    'zope.interface>=4.4.0',
+]
+
+
+if not os.environ.get('SNAP_BUILD'):
+    install_requires.extend([
+        f'acme>={cb_required}',
+        f'certbot>={cb_required}',
+    ])
+
+
+if os.environ.get('SNAP_BUILD'):
+    install_requires.append('packaging')
+
+
+BASE_PATH = os.path.abspath(os.path.dirname(__file__))
+with open(os.path.join(BASE_PATH, 'README.rst')) as f:
+    long_desc = f.read()
+
 
 
 setup(
     name="certbot-dns-loopia",
-    version="1.0.1",
+    version=version,
     description="Loopia DNS authentication plugin for Certbot",
     long_description=long_desc,
     long_description_content_type="text/x-rst",
@@ -33,8 +53,8 @@ setup(
         ],
     },
     entry_points={
-        "certbot.plugins": [
-            "dns-loopia = certbot_dns_loopia:LoopiaAuthenticator",
+        'certbot.plugins': [
+            'dns-loopia = certbot_dns_loopia:LoopiaAuthenticator',
         ],
     },
     classifiers=[
