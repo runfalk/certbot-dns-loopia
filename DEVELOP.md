@@ -16,6 +16,26 @@ python3 -m venv venv
 pip install -e .[dev]
 ```
 
+# Test
+Before you commit any code you should preferably run...
+```shell
+make lint
+make test
+```
+
+## Live Testing
+If you have a domain to play around with there is a way of running a live test.
+You must create the `credentials.ini` file in the project root with the correct credentials.
+```shell
+# set some variables that are used
+export EMAIL=<your email address>
+export TESTDOMAIN=<yourdomain.com>
+
+
+# run the live tests that will be using your email and test.sub.$TESTDOMAIN
+make livetest
+```
+
 
 
 # Publish
