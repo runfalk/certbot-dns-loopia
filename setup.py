@@ -13,7 +13,7 @@ setup(
     version="1.0.1",
     description="Loopia DNS authentication plugin for Certbot",
     long_description=long_desc,
-    long_description_content_type="text/x-rst",
+    long_description_content_type="text/markdown",
     license="BSD",
     author="Andreas Runfalk",
     author_email="andreas@runfalk.se",

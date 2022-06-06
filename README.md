@@ -4,7 +4,7 @@
 
 
 This allows automatic completion of
-[Certbot\'s](https://github.com/certbot/certbot) DNS01 challenge for
+[Certbot's](https://github.com/certbot/certbot) DNS01 challenge for
 domains managed on [Loopia](https://www.loopia.se/) DNS.
 
 ## Installing
@@ -51,7 +51,7 @@ $ chmod 600 credentials.ini
 
 ### Parameters
 
-When using `certbot` with `certbot-dns-loopia`, aside from the usual parameters excepted by `certbot`, the following
+When using `certbot` with `certbot-dns-loopia`, aside from the usual parameters accepted by `certbot`, the following
 parameters may be used:
 
 | Parameter                                   | Required?                  | Default | Description      |
