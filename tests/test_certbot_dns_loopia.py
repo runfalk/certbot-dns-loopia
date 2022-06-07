@@ -2,12 +2,13 @@
 Tests for certbot-dns-loopia
 """
 # pylint: disable=protected-access,too-few-public-methods
-from argparse import Namespace
 from unittest.mock import MagicMock
-from tldextract import TLDExtract
-from loopialib import DnsRecord, Loopia
-from certbot_dns_loopia import LoopiaAuthenticator
+
 from certbot.configuration import NamespaceConfig
+from loopialib import DnsRecord, Loopia
+from tldextract import TLDExtract
+
+from certbot_dns_loopia import LoopiaAuthenticator
 
 
 # This config just sets all parameters to some value. It's just to make sure
