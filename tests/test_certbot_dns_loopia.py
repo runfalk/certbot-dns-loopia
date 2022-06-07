@@ -2,17 +2,24 @@
 Tests for certbot-dns-loopia
 """
 # pylint: disable=protected-access,too-few-public-methods
-
+from argparse import Namespace
 from unittest.mock import MagicMock
-from certbot_dns_loopia import LoopiaAuthenticator, DnsRecord, TLDExtract
+from tldextract import TLDExtract
+from loopialib import DnsRecord, Loopia
+from certbot_dns_loopia import LoopiaAuthenticator
+from certbot.configuration import NamespaceConfig
 
 
 # This config just sets all parameters to some value. It's just to make sure
 # that the DNSAuthenticator constructor has all the parameters it might need
-class PluginConfig:
+class PluginConfig(NamespaceConfig):
     """
     PluginConfig with test variables
     """
+
+    def __init__(self) -> None:
+        super().__init__(MagicMock())
+
     verb = "certonly"
     config_dir = "/tmp/cfg"
     work_dir = "/tmp/work"
@@ -27,15 +34,16 @@ class LoopiaTestAuthenticator(LoopiaAuthenticator):
     """
     Testing using mock objects
     """
-    def __init__(self, client):
-        super().__init__(config=PluginConfig, name="dns-loopia")
+
+    def __init__(self, client: Loopia) -> None:
+        super().__init__(config=PluginConfig(), name="dns-loopia")
         self._test_client = client
 
-    def _get_loopia_client(self):
+    def _get_loopia_client(self) -> Loopia:
         return self._test_client
 
 
-def test_perform_cleanup_cycle():
+def test_perform_cleanup_cycle() -> None:
     """
     Performs a full cycle including cleanup
     """
