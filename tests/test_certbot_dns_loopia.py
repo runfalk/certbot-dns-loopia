@@ -13,6 +13,7 @@ from certbot_dns_loopia import LoopiaAuthenticator
 mock_namespace = MagicMock()
 mock_namespace.config_dir = "/tmp"
 mock_namespace.work_dir = "/tmp"
+mock_namespace.logs_dir = "/tmp"
 
 
 # This config just sets all parameters to some value. It's just to make sure
