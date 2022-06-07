@@ -10,6 +10,9 @@ from tldextract import TLDExtract
 
 from certbot_dns_loopia import LoopiaAuthenticator
 
+mock_namespace = MagicMock()
+mock_namespace.config_dir = "/tmp"
+
 
 # This config just sets all parameters to some value. It's just to make sure
 # that the DNSAuthenticator constructor has all the parameters it might need
@@ -19,7 +22,7 @@ class PluginConfig(NamespaceConfig):
     """
 
     def __init__(self) -> None:
-        super().__init__(MagicMock())
+        super().__init__(mock_namespace)
 
     verb = "certonly"
     config_dir = "/tmp/cfg"
