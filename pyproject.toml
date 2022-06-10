@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [tool.mypy]
 strict = "True"
-exclude = ["setup.py"]
+exclude = ["setup.py", "venv"]
 
 [[tool.mypy.overrides]]
 module = "loopialib.*"
