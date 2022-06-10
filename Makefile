@@ -6,7 +6,7 @@ TESTHOST?=test.sub.$(TESTDOMAIN)
 
 
 lint:
-	pylint certbot_dns_loopia.py tests/
+	pylint setup.py certbot_dns_loopia.py tests/
 
 test:
 	pytest 
