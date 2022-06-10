@@ -2,9 +2,9 @@ from setuptools import setup
 
 
 try:
-    long_desc = open("README.rst").read()
+    long_desc = open("README.md").read()
 except FileNotFoundError:
-    print("Skipping README.rst for long description as it was not found")
+    print("Skipping README.md for long description as it was not found")
     long_desc = None
 
 
@@ -13,7 +13,7 @@ setup(
     version="1.0.1",
     description="Loopia DNS authentication plugin for Certbot",
     long_description=long_desc,
-    long_description_content_type="text/x-rst",
+    long_description_content_type="text/markdown",
     license="BSD",
     author="Andreas Runfalk",
     author_email="andreas@runfalk.se",
