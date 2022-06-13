@@ -2,14 +2,93 @@
 Contains the Loopia DNS ACME authenticator class.
 """
 import logging
-from typing import Callable, Optional
+from dataclasses import dataclass
+from enum import Enum
+from typing import Callable, Optional, Tuple, get_type_hints
+from xmlrpc.client import ServerProxy
 
 from tldextract import TLDExtract
 from certbot.plugins.dns_common import DNSAuthenticator, CredentialsConfiguration
 from certbot.configuration import NamespaceConfig
-from loopialib import DnsRecord, Loopia
+from loopialib import Loopia
 
 logger = logging.getLogger(__name__)
+
+
+# class StrEnum(str, Enum):
+#     pass
+
+
+class RecordType(str, Enum):
+    A = "A"
+    AAAA = "AAAA"
+    CERT = "CERT"
+    CNAME = "CNAME"
+    HINFO = "HINFO"
+    HIP = "HIP"
+    IPSECKEY = "IPSECKEY"
+    LOC = "LOC"
+    MX = "MX"
+    NAPTR = "NAPTR"
+    NS = "NS"
+    SRV = "SRV"
+    SSHFP = "SSHFP"
+    TXT = "TXT"
+
+
+@dataclass(frozen=True)
+class DnsRecord:
+    type: RecordType
+    ttl: int = 3600
+    priority: int = 0
+    rdata: str = ""
+    record_id: int = 0
+
+    def __post_init__(self):
+        type_hints = get_type_hints(self)
+        for name, type_hint in type_hints.items():
+            value = getattr(self, name)
+            if not isinstance(value, type_hint):
+                raise ValueError(f"Expected attribute '{name}' to be of type {type_hint}, but value was {value}")
+
+
+class LoopiaClient:
+    """Loopia XML-RPC API client used to get/add/remove DNS zone records."""
+    URL = "https://api.loopia.se/RPCSERV"
+    ENCODING = "utf-8"
+
+    def __init__(self, user: str, password: str) -> None:
+        self.__user = user
+        self.__password = password
+        self.__xmlrpc_server_proxy = ServerProxy(uri=LoopiaClient.URL, encoding=LoopiaClient.ENCODING)
+
+    @property
+    def __credentials(self) -> Tuple[str, str]:
+        return self.__user, self.__password
+
+    def get_zone_records(self, domain: str, subdomain: str = "@") -> Tuple[DnsRecord, ...]:
+        records = self.__xmlrpc_server_proxy.getZoneRecords(*self.__credentials, domain, subdomain)
+
+        return tuple(
+            DnsRecord(**record)
+            for record
+            in records
+        )
+
+    def add_zone_record(self, dns_record: DnsRecord, domain: str, subdomain: str = "@"):
+        if dns_record.id != 0:
+            raise ValueError("Record must not have an ID")
+
+
+if __name__ == "__main__":
+    c = LoopiaClient("tornstrom@loopiaapi", "whydissohard")
+    recors = c.get_zone_records(domain="xn--trnstrm-90af.se")
+    print(recors)
+    # r = DnsRecord(
+    #     type=RecordType.TXT,
+    #     data=1
+    # )
+    # print(r.type.value)
 
 
 class LoopiaAuthenticator(DNSAuthenticator):
@@ -27,7 +106,6 @@ class LoopiaAuthenticator(DNSAuthenticator):
 
     def __init__(self, config: NamespaceConfig, name: str) -> None:
         super().__init__(config, name)
-        self._client = None
         self.credentials: Optional[CredentialsConfiguration] = None
 
         # Use empty tuple for param to prevent tldextract from performing live
@@ -69,15 +147,15 @@ class LoopiaAuthenticator(DNSAuthenticator):
         )
 
     def _perform(
-        self,
-        domain: str,
-        validation_name: str,
-        validation: str,
+            self,
+            domain: str,
+            validation_name: str,
+            validation: str,
     ) -> None:
         loopia = self._get_loopia_client()
         domain_parts = self._tld_extract(validation_name)
 
-        dns_record = DnsRecord("TXT", ttl=self.ttl, data=validation)
+        dns_record = DnsRecord(RecordType.TXT, ttl=self.ttl, data=validation)
 
         msg = "Creating TXT record for %s on subdomain %s"
         logger.debug(msg, domain_parts.registered_domain, domain_parts.subdomain)
@@ -89,14 +167,14 @@ class LoopiaAuthenticator(DNSAuthenticator):
         )
 
     def _cleanup(
-        self,
-        domain: str,
-        validation_name: str,
-        validation: str,
+            self,
+            domain: str,
+            validation_name: str,
+            validation: str,
     ) -> None:
         loopia = self._get_loopia_client()
         domain_parts = self._tld_extract(validation_name)
-        dns_record = DnsRecord("TXT", ttl=self.ttl, data=validation)
+        dns_record = DnsRecord(RecordType.TXT, ttl=self.ttl, data=validation)
 
         records = loopia.get_zone_records(
             domain=domain_parts.registered_domain,
