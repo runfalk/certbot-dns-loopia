@@ -29,3 +29,6 @@ jobs:
       - name: Running pytest
         run: |
           make test
+      - name: Checking types with mypy
+        run: |
+          make typecheck

@@ -2,9 +2,11 @@
 Contains the Loopia DNS ACME authenticator class.
 """
 import logging
+from typing import Callable, Optional
 
 from tldextract import TLDExtract
-from certbot.plugins.dns_common import DNSAuthenticator
+from certbot.plugins.dns_common import DNSAuthenticator, CredentialsConfiguration
+from certbot.configuration import NamespaceConfig
 from loopialib import DnsRecord, Loopia
 
 logger = logging.getLogger(__name__)
@@ -23,29 +25,32 @@ class LoopiaAuthenticator(DNSAuthenticator):
     #: TTL for the validation TXT record
     ttl = 30
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, config: NamespaceConfig, name: str) -> None:
+        super().__init__(config, name)
         self._client = None
-        self.credentials = None
+        self.credentials: Optional[CredentialsConfiguration] = None
 
         # Use empty tuple for param to prevent tldextract from performing live
         # HTTP request to update the TLD list
         self._tld_extract = TLDExtract(suffix_list_urls=())
 
     @classmethod
-    def add_parser_arguments(cls, add, default_propagation_seconds=15*60):
-        super(LoopiaAuthenticator, cls).add_parser_arguments(
-            add, default_propagation_seconds)
+    def add_parser_arguments(
+            cls,
+            add: Callable[..., None],
+            default_propagation_seconds: int = 15 * 60,
+    ) -> None:
+        super(LoopiaAuthenticator, cls).add_parser_arguments(add, default_propagation_seconds)
         add("credentials", help="Loopia API credentials INI file.")
 
-    def more_info(self):
+    def more_info(self) -> str:
         """
         More in-depth description of the plugin.
         """
 
         return "\n".join(line[4:] for line in __doc__.strip().split("\n"))
 
-    def _setup_credentials(self):
+    def _setup_credentials(self) -> None:
         self.credentials = self._configure_credentials(
             "credentials",
             "Loopia credentials INI file",
@@ -55,12 +60,20 @@ class LoopiaAuthenticator(DNSAuthenticator):
             },
         )
 
-    def _get_loopia_client(self):
+    def _get_loopia_client(self) -> Loopia:
+        assert self.credentials, "Credentials not set"
+
         return Loopia(
             self.credentials.conf("user"),
-            self.credentials.conf("password"))
+            self.credentials.conf("password"),
+        )
 
-    def _perform(self, domain, validation_name, validation):
+    def _perform(
+        self,
+        domain: str,
+        validation_name: str,
+        validation: str,
+    ) -> None:
         loopia = self._get_loopia_client()
         domain_parts = self._tld_extract(validation_name)
 
@@ -75,7 +88,12 @@ class LoopiaAuthenticator(DNSAuthenticator):
             subdomain=domain_parts.subdomain or None,
         )
 
-    def _cleanup(self, domain, validation_name, validation):
+    def _cleanup(
+        self,
+        domain: str,
+        validation_name: str,
+        validation: str,
+    ) -> None:
         loopia = self._get_loopia_client()
         domain_parts = self._tld_extract(validation_name)
         dns_record = DnsRecord("TXT", ttl=self.ttl, data=validation)

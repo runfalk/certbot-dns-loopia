@@ -34,6 +34,7 @@ setup(
             "pytest",
             "wheel",
             "pylint==2.13.9",
+            "mypy==0.961",
         ],
     },
     entry_points={

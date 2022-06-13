@@ -13,3 +13,6 @@ test:
 
 livetest:
 	./scripts/test.sh $(TESTHOST)
+
+typecheck:
+	mypy .
