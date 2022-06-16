@@ -1,19 +1,23 @@
+"""
+Setup for certbot-dns-loopia.
+"""
+# pylint: disable=consider-using-with
 from setuptools import setup
 
 
 try:
-    long_desc = open("README.rst").read()
+    LONG_DESC = open("README.md", encoding="utf-8").read()
 except FileNotFoundError:
-    print("Skipping README.rst for long description as it was not found")
-    long_desc = None
+    print("Skipping README.md for long description as it was not found")
+    LONG_DESC = None
 
 
 setup(
     name="certbot-dns-loopia",
     version="1.0.1",
     description="Loopia DNS authentication plugin for Certbot",
-    long_description=long_desc,
-    long_description_content_type="text/x-rst",
+    long_description=LONG_DESC,
+    long_description_content_type="text/markdown",
     license="BSD",
     author="Andreas Runfalk",
     author_email="andreas@runfalk.se",
