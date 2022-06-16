@@ -15,7 +15,7 @@ certbot certonly \
     --dry-run \
     --authenticator dns-loopia \
     --dns-loopia-credentials credentials.ini \
-    --dns-loopia-propagation-seconds 900 \
+    --dns-loopia-propagation-seconds 90 \
     --non-interactive \
     --agree-tos \
     -m $EMAIL \

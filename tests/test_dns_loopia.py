@@ -7,7 +7,7 @@ from unittest.mock import MagicMock
 from certbot.configuration import NamespaceConfig
 from tldextract import TLDExtract
 
-from certbot_dns_loopia import LoopiaAuthenticator, LoopiaClient, DnsRecord
+from certbot_dns_loopia._internal.dns_loopia import Authenticator, LoopiaClient, DnsRecord
 
 mock_namespace = MagicMock()
 mock_namespace.config_dir = "/tmp"
@@ -35,7 +35,7 @@ class PluginConfig(NamespaceConfig):
     server = "https://acme-v02.api.letsencrypt.org/directory"
 
 
-class LoopiaTestAuthenticator(LoopiaAuthenticator):
+class TestAuthenticator(Authenticator):
     """
     Testing using mock objects
     """
@@ -60,14 +60,14 @@ def test_perform_cleanup_cycle() -> None:
     domain_parts = tld_extract(validation_domain)
 
     dns_record = DnsRecord(
-        LoopiaAuthenticator.TXT_RECORD_TYPE,
-        ttl=LoopiaAuthenticator.TTL,
+        Authenticator.txt_record_type,
+        ttl=Authenticator.ttl,
         rdata=validation_key
     )
 
     loopia_mock = MagicMock()
 
-    auth = LoopiaTestAuthenticator(loopia_mock)
+    auth = TestAuthenticator(loopia_mock)
 
     auth._perform(domain, validation_domain, validation_key)
 
@@ -79,9 +79,9 @@ def test_perform_cleanup_cycle() -> None:
     record_id = 20200305
     loopia_mock.get_zone_records.return_value = [
         DnsRecord(
-            LoopiaAuthenticator.TXT_RECORD_TYPE,
+            Authenticator.txt_record_type,
             record_id=record_id,
-            ttl=auth.TTL,
+            ttl=auth.ttl,
             rdata=validation_key,
         ),
     ]

@@ -38,7 +38,7 @@ setup(
     },
     entry_points={
         "certbot.plugins": [
-            "dns-loopia = certbot_dns_loopia:LoopiaAuthenticator",
+            "dns-loopia = certbot_dns_loopia._internal.dns_loopia:Authenticator",
         ],
     },
     classifiers=[

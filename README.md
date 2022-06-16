@@ -5,7 +5,8 @@
 
 This allows automatic completion of
 [Certbot's](https://github.com/certbot/certbot) DNS01 challenge for
-domains managed on [Loopia](https://www.loopia.se/) DNS.
+domains managed on [Loopia](https://www.loopia.se/) DNS by leveraging
+the [Loopia XML-RPC API](https://www.loopia.se/api/).
 
 ## Installing
 
@@ -20,7 +21,7 @@ what you are doing.
 
 ### Loopia API user 
 
-The plugin requires the following permissions enabled for your Loopia API user:
+The plugin requires a Loopia API user with the following permissions:
 
 - `addZoneRecord`
 - `getZoneRecords`

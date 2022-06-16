@@ -9,16 +9,11 @@ from typing import Callable, Optional, Tuple, get_type_hints, Any, TypeVar, cast
 from xmlrpc.client import ServerProxy
 
 from certbot.configuration import NamespaceConfig
+from certbot.errors import PluginError
 from certbot.plugins.dns_common import DNSAuthenticator, CredentialsConfiguration
 from tldextract import TLDExtract
 
 logger = logging.getLogger(__name__)
-
-
-class LoopiaApiError(Exception):
-    """
-    Exception type to use when Loopia API returns errors.
-    """
 
 
 @dataclass(frozen=True, eq=False)
@@ -76,7 +71,8 @@ def reraise_xmlprc_fault(function_to_wrap: FuncT) -> FuncT:
         try:
             return function_to_wrap(*args, **kwargs)
         except xmlrpc.client.Fault as error:
-            raise LoopiaApiError(error.faultString) from error
+            error_msg = f"Loopia responded with: '{error.faultString}'"
+            raise PluginError(error_msg) from error
 
     return cast(FuncT, decorated)
 
@@ -102,11 +98,8 @@ class LoopiaClient:
             subdomain: Optional[str] = "@",
     ) -> Tuple[DnsRecord, ...]:
         """Returns all zone records for the provided domain/subdomain."""
-        try:
-            records = self.__api.getZoneRecords(*self.__credentials, domain, subdomain)
-            records = cast(List[Mapping[Any, Any]], records)
-        except xmlrpc.client.Fault as error:
-            raise LoopiaApiError(error.faultString) from error
+        records = self.__api.getZoneRecords(*self.__credentials, domain, subdomain)
+        records = cast(List[Mapping[Any, Any]], records)
 
         return tuple(
             DnsRecord(**record)
@@ -157,7 +150,7 @@ class LoopiaClient:
         )
 
 
-class LoopiaAuthenticator(DNSAuthenticator):
+class Authenticator(DNSAuthenticator):
     """
     Loopia DNS ACME authenticator.
 
@@ -165,12 +158,12 @@ class LoopiaAuthenticator(DNSAuthenticator):
     """
 
     #: Short description of plugin
-    DESCRIPTION = __doc__.strip().split("\n", 1)[0]
+    description = __doc__.strip().split("\n", 1)[0]
 
     #: TTL for the validation TXT record
-    TTL = 30
+    ttl = 30
 
-    TXT_RECORD_TYPE = "TXT"
+    txt_record_type = "TXT"
 
     def __init__(self, config: NamespaceConfig, name: str) -> None:
         super().__init__(config, name)
@@ -186,7 +179,7 @@ class LoopiaAuthenticator(DNSAuthenticator):
             add: Callable[..., None],
             default_propagation_seconds: int = 15 * 60,
     ) -> None:
-        super(LoopiaAuthenticator, cls).add_parser_arguments(add, default_propagation_seconds)
+        super(Authenticator, cls).add_parser_arguments(add, default_propagation_seconds)
         add("credentials", help="Loopia API credentials INI file.")
 
     def more_info(self) -> str:
@@ -223,7 +216,7 @@ class LoopiaAuthenticator(DNSAuthenticator):
         loopia_client = self._get_loopia_client()
         domain_parts = self._tld_extract(validation_name)
 
-        dns_record = DnsRecord(self.TXT_RECORD_TYPE, ttl=self.TTL, rdata=validation)
+        dns_record = DnsRecord(self.txt_record_type, ttl=self.ttl, rdata=validation)
 
         msg = "Creating TXT record for %s on subdomain %s"
         logger.debug(msg, domain_parts.registered_domain, domain_parts.subdomain)
@@ -242,7 +235,7 @@ class LoopiaAuthenticator(DNSAuthenticator):
     ) -> None:
         loopia = self._get_loopia_client()
         domain_parts = self._tld_extract(validation_name)
-        target_dns_record = DnsRecord(self.TXT_RECORD_TYPE, ttl=self.TTL, rdata=validation)
+        target_dns_record = DnsRecord(self.txt_record_type, ttl=self.ttl, rdata=validation)
 
         records = loopia.get_zone_records(
             domain=domain_parts.registered_domain,

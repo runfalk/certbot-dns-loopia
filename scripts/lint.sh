@@ -3,4 +3,4 @@
 set -e
 set -x
 
-pylint certbot_dns_loopia.py tests/
+pylint certbot_dns_loopia/ tests/

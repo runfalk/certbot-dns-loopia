@@ -60,7 +60,7 @@ certbot_dns_loopia-whl/
 │   ├── WHEEL
 │   ├── entry_points.txt
 │   └── top_level.txt
-└── certbot_dns_loopia.py
+└── dns_loopia.py
 
 # remove unzipped folder
 rm -Rf  certbot_dns_loopia-whl
