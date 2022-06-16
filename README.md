@@ -54,10 +54,10 @@ $ chmod 600 credentials.ini
 When using `certbot` with `certbot-dns-loopia`, aside from the usual parameters accepted by `certbot`, the following
 parameters may be used:
 
-| Parameter                                   | Required?                  | Default | Description      |
-|---------------------------------------------|----------------------------|---------|-------------------|
-|`--dns-loopia-credentials <path>`            | :heavy_check_mark:️         | -       | The path of the INI file containing your Loopia API user credentials |
-|`--dns-loopia-propagation-seconds <seconds>` |                            | 900     |  Determines how many seconds to wait before contacting the ACME server after adding the zone record to Loopia DNS
+| Parameter                                    | Required?           | Default | Description                                                                                                      |
+|----------------------------------------------|---------------------|---------|------------------------------------------------------------------------------------------------------------------|
+| `--dns-loopia-credentials <path>`            | :heavy_check_mark:️ | -       | The path of the INI file containing your Loopia API user credentials                                             |
+| `--dns-loopia-propagation-seconds <seconds>` |                     | 900     | Determines how many seconds to wait before contacting the ACME server after adding the zone record to Loopia DNS |
 
 ### Examples
 

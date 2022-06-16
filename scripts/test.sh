@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 mkdir -p tmp/etc/
 mkdir -p tmp/log/
 mkdir -p tmp/run/
@@ -14,7 +15,7 @@ certbot certonly \
     --dry-run \
     --authenticator dns-loopia \
     --dns-loopia-credentials credentials.ini \
-    --dns-loopia-propagation-seconds 60 \
+    --dns-loopia-propagation-seconds 900 \
     --non-interactive \
     --agree-tos \
     -m $EMAIL \
