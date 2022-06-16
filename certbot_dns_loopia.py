@@ -62,32 +62,34 @@ class DnsRecord:
         )
 
 
+FuncT = TypeVar("FuncT", bound=Callable[..., Any])
+
+
+def reraise_xmlprc_fault(function_to_wrap: FuncT) -> FuncT:
+    """
+    Simple decorator function that wraps the supplied function in
+    a try-except that handles xmlrpc client faults.
+    """
+
+    @wraps(function_to_wrap)
+    def decorated(*args: Any, **kwargs: Any) -> Any:
+        try:
+            return function_to_wrap(*args, **kwargs)
+        except xmlrpc.client.Fault as error:
+            raise LoopiaApiError(error.faultString) from error
+
+    return cast(FuncT, decorated)
+
+
 class LoopiaClient:
     """Loopia XML-RPC API client used to get/add/remove DNS zone records."""
     URL = "https://api.loopia.se/RPCSERV"
     ENCODING = "utf-8"
 
-    FuncT = TypeVar("FuncT", bound=Callable[..., Any])
-
     def __init__(self, user: str, password: str) -> None:
         self.__user = user
         self.__password = password
         self.__api = ServerProxy(uri=LoopiaClient.URL, encoding=LoopiaClient.ENCODING)
-
-    @staticmethod
-    def reraise_xmlprc_fault(function_to_wrap: FuncT) -> FuncT:
-        """
-        Simple decorator function that wraps the supplied function in
-        a try-except that handles xmlrpc client faults.
-        """
-        @wraps(function_to_wrap)
-        def decorated(*args: Any, **kwargs: Any) -> Any:
-            try:
-                return function_to_wrap(*args, **kwargs)
-            except xmlrpc.client.Fault as error:
-                raise LoopiaApiError(error.faultString) from error
-
-        return cast(LoopiaClient.FuncT, decorated)
 
     @property
     def __credentials(self) -> Tuple[str, str]:
