@@ -262,8 +262,8 @@ class Authenticator(DNSAuthenticator):
 
         # Delete subdomain if we emptied it completely
         if remove_subdomain:
-            msg = "Removing subdomain %s on subdomain %s"
-            logger.debug(msg, domain_parts[1], domain_parts[0])
+            msg = "Removing subdomain %s on domain %s"
+            logger.debug(msg, domain_parts.subdomain, domain_parts.registered_domain)
             loopia.remove_subdomain(
                 domain=domain_parts.registered_domain,
                 subdomain=domain_parts.subdomain,
