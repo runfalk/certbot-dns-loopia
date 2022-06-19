@@ -47,7 +47,8 @@ class DnsRecord:
         """
         Special equals operator implementation that does not compare record ID.
         """
-        assert isinstance(other, DnsRecord)
+        if not isinstance(other, DnsRecord):
+            return False
 
         return (
                 self.type == other.type and
@@ -57,10 +58,10 @@ class DnsRecord:
         )
 
 
-FuncT = TypeVar("FuncT", bound=Callable[..., Any])
+FunctionType = TypeVar("FunctionType", bound=Callable[..., Any])
 
 
-def reraise_xmlprc_fault(function_to_wrap: FuncT) -> FuncT:
+def reraise_xmlprc_fault(function_to_wrap: FunctionType) -> FunctionType:
     """
     Simple decorator function that wraps the supplied function in
     a try-except that handles xmlrpc client faults.
@@ -74,18 +75,18 @@ def reraise_xmlprc_fault(function_to_wrap: FuncT) -> FuncT:
             error_msg = f"Loopia responded with: '{error.faultString}'"
             raise PluginError(error_msg) from error
 
-    return cast(FuncT, decorated)
+    return cast(FunctionType, decorated)
 
 
 class LoopiaClient:
     """Loopia XML-RPC API client used to get/add/remove DNS zone records."""
-    URL = "https://api.loopia.se/RPCSERV"
-    ENCODING = "utf-8"
+    url = "https://api.loopia.se/RPCSERV"
+    encoding = "utf-8"
 
     def __init__(self, user: str, password: str) -> None:
         self.__user = user
         self.__password = password
-        self.__api = ServerProxy(uri=LoopiaClient.URL, encoding=LoopiaClient.ENCODING)
+        self.__api = ServerProxy(uri=LoopiaClient.url, encoding=LoopiaClient.encoding)
 
     @property
     def __credentials(self) -> Tuple[str, str]:
