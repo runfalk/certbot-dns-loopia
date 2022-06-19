@@ -142,7 +142,7 @@ class LoopiaClient:
         )
 
     @reraise_xmlprc_fault
-    def remove_subdomain(self, domain: str, subdomain: str = "@") -> None:
+    def remove_subdomain(self, domain: str, subdomain: Optional[str] = "@") -> None:
         """Removes the provided subdomain for the provided domain."""
         self.__api.removeSubdomain(
             *self.__credentials,
