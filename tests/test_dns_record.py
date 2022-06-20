@@ -1,9 +1,11 @@
+"""Tests for the DnsRecord class"""
 import pytest
 
 from certbot_dns_loopia._internal.dns_loopia import DnsRecord
 
 
 def test_type_validation() -> None:
+    """Test that the 'type' param data type of DnsRecord is validated on creation"""
     # Does not raise
     DnsRecord(type="TXT")
 
@@ -13,6 +15,7 @@ def test_type_validation() -> None:
 
 
 def test_ttl_validation() -> None:
+    """Test that the 'ttl' param data type of DnsRecord is validated on creation"""
     # Does not raise
     DnsRecord(type="TXT", ttl=10)
 
@@ -22,6 +25,7 @@ def test_ttl_validation() -> None:
 
 
 def test_priority_validation() -> None:
+    """Test that the 'priority' param data type of DnsRecord is validated on creation"""
     # Does not raise
     DnsRecord(type="TXT", priority=1)
 
@@ -31,6 +35,7 @@ def test_priority_validation() -> None:
 
 
 def test_rdata_validation() -> None:
+    """Test that the 'rdata' param data type of DnsRecord is validated on creation"""
     # Does not raise
     DnsRecord(type="TXT", rdata="Some data")
 
@@ -40,6 +45,7 @@ def test_rdata_validation() -> None:
 
 
 def test_record_id_validation() -> None:
+    """Test that the 'record_id' param data type of DnsRecord is validated on creation"""
     # Does not raise
     DnsRecord(type="TXT", record_id=500)
 
@@ -49,6 +55,7 @@ def test_record_id_validation() -> None:
 
 
 def test_that_equals_ignores_record_id() -> None:
+    """Test that the custom __eq__ implementation of DnsRecord ignores 'record_id'"""
     dns_record_1 = DnsRecord(
         type="TXT",
         ttl=3600,
@@ -69,6 +76,10 @@ def test_that_equals_ignores_record_id() -> None:
 
 
 def test_that_equals_fails_when_types_mismatch() -> None:
+    """
+    Test that the custom __eq__ implementation of DnsRecord returns false
+    when comparing against object of another type
+    """
     dns_record_1 = DnsRecord(
         type="TXT",
         ttl=3600,

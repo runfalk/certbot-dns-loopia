@@ -58,10 +58,10 @@ class DnsRecord:
         )
 
 
-FunctionType = TypeVar("FunctionType", bound=Callable[..., Any])
+FunctionT = TypeVar("FunctionT", bound=Callable[..., Any])
 
 
-def reraise_xmlprc_fault(function_to_wrap: FunctionType) -> FunctionType:
+def reraise_xmlprc_fault(function_to_wrap: FunctionT) -> FunctionT:
     """
     Simple decorator function that wraps the supplied function in
     a try-except that handles xmlrpc client faults.
@@ -75,7 +75,7 @@ def reraise_xmlprc_fault(function_to_wrap: FunctionType) -> FunctionType:
             error_msg = f"Loopia responded with: '{error.faultString}'"
             raise PluginError(error_msg) from error
 
-    return cast(FunctionType, decorated)
+    return cast(FunctionT, decorated)
 
 
 class LoopiaClient:
