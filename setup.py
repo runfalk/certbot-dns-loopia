@@ -2,8 +2,7 @@
 Setup for certbot-dns-loopia.
 """
 # pylint: disable=consider-using-with
-from setuptools import setup
-
+from setuptools import setup, find_packages
 
 try:
     LONG_DESC = open("README.md", encoding="utf-8").read()
@@ -22,11 +21,10 @@ setup(
     author="Andreas Runfalk",
     author_email="andreas@runfalk.se",
     url="https://www.github.com/runfalk/certbot-loopia",
-    py_modules=["certbot_dns_loopia"],
+    packages=find_packages(),
     install_requires=[
         "acme>=1.8.0",
         "certbot>=1.7.0",
-        "loopialib>=0.2.0",
         "tldextract>=3.3.0",
     ],
     extras_require={
@@ -39,7 +37,7 @@ setup(
     },
     entry_points={
         "certbot.plugins": [
-            "dns-loopia = certbot_dns_loopia:LoopiaAuthenticator",
+            "dns-loopia = certbot_dns_loopia._internal.dns_loopia:Authenticator",
         ],
     },
     classifiers=[

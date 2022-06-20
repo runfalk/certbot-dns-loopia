@@ -2,11 +2,11 @@
 TESTHOST?=test.sub.$(TESTDOMAIN)
 
 
-.PHONY: lint test livetest
+.PHONY: lint test livetest typecheck
 
 
 lint:
-	pylint setup.py certbot_dns_loopia.py tests/
+	./scripts/lint.sh
 
 test:
 	pytest 

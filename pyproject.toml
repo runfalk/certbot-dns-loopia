@@ -7,13 +7,6 @@ strict = "True"
 exclude = ["setup.py", "venv"]
 
 [[tool.mypy.overrides]]
-module = "loopialib.*"
-
-# loopialib is not typed and there are no stub files available. This will not be a problem once we remove
-# loopialib, which is already a work in progress.
-ignore_missing_imports = "True"
-
-[[tool.mypy.overrides]]
 module = "tldextract.*"
 
 # tldextract uses an __init__.py file to implicitly reexport TLDExtract, so we need to allow this

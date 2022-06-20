@@ -51,16 +51,22 @@ python -m build
 cd dist/
 unzip certbot_dns_loopia-1.0.0-py3-none-any.whl -d certbot_dns_loopia-whl
 tree certbot_dns_loopia-whl
-# Should output somehting like this
+
+# The above should output somehting like this
 certbot_dns_loopia-whl/
-├── certbot_dns_loopia-1.0.0.dist-info
-│   ├── LICENSE
-│   ├── METADATA
-│   ├── RECORD
-│   ├── WHEEL
-│   ├── entry_points.txt
-│   └── top_level.txt
-└── certbot_dns_loopia.py
+├── certbot_dns_loopia
+│   ├── __init__.py
+│   └── _internal
+│       ├── dns_loopia.py
+│       └── __init__.py
+└── certbot_dns_loopia-1.0.1.dist-info
+    ├── entry_points.txt
+    ├── LICENSE
+    ├── METADATA
+    ├── RECORD
+    ├── top_level.txt
+    └── WHEEL
+
 
 # remove unzipped folder
 rm -Rf  certbot_dns_loopia-whl

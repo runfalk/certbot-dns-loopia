@@ -5,7 +5,8 @@
 
 This allows automatic completion of
 [Certbot's](https://github.com/certbot/certbot) DNS01 challenge for
-domains managed on [Loopia](https://www.loopia.se/) DNS.
+domains managed on [Loopia](https://www.loopia.se/) DNS by leveraging
+the [Loopia XML-RPC API](https://www.loopia.se/api/).
 
 ## Installing
 
@@ -20,7 +21,7 @@ what you are doing.
 
 ### Loopia API user 
 
-The plugin requires the following permissions enabled for your Loopia API user:
+The plugin requires a Loopia API user with the following permissions:
 
 - `addZoneRecord`
 - `getZoneRecords`
@@ -54,10 +55,10 @@ $ chmod 600 credentials.ini
 When using `certbot` with `certbot-dns-loopia`, aside from the usual parameters accepted by `certbot`, the following
 parameters may be used:
 
-| Parameter                                   | Required?                  | Default | Description      |
-|---------------------------------------------|----------------------------|---------|-------------------|
-|`--dns-loopia-credentials <path>`            | :heavy_check_mark:️         | -       | The path of the INI file containing your Loopia API user credentials |
-|`--dns-loopia-propagation-seconds <seconds>` |                            | 900     |  Determines how many seconds to wait before contacting the ACME server after adding the zone record to Loopia DNS
+| Parameter                                    | Required?           | Default | Description                                                                                                      |
+|----------------------------------------------|---------------------|---------|------------------------------------------------------------------------------------------------------------------|
+| `--dns-loopia-credentials <path>`            | :heavy_check_mark:️ | -       | The path of the INI file containing your Loopia API user credentials                                             |
+| `--dns-loopia-propagation-seconds <seconds>` |                     | 900     | Determines how many seconds to wait before contacting the ACME server after adding the zone record to Loopia DNS |
 
 ### Examples
 

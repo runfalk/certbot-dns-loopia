@@ -5,10 +5,9 @@ Tests for certbot-dns-loopia
 from unittest.mock import MagicMock
 
 from certbot.configuration import NamespaceConfig
-from loopialib import DnsRecord, Loopia
 from tldextract import TLDExtract
 
-from certbot_dns_loopia import LoopiaAuthenticator
+from certbot_dns_loopia._internal.dns_loopia import Authenticator, LoopiaClient, DnsRecord
 
 mock_namespace = MagicMock()
 mock_namespace.config_dir = "/tmp"
@@ -36,16 +35,16 @@ class PluginConfig(NamespaceConfig):
     server = "https://acme-v02.api.letsencrypt.org/directory"
 
 
-class LoopiaTestAuthenticator(LoopiaAuthenticator):
+class TestAuthenticator(Authenticator):
     """
     Testing using mock objects
     """
 
-    def __init__(self, client: Loopia) -> None:
+    def __init__(self, client: LoopiaClient) -> None:
         super().__init__(config=PluginConfig(), name="dns-loopia")
         self._test_client = client
 
-    def _get_loopia_client(self) -> Loopia:
+    def _get_loopia_client(self) -> LoopiaClient:
         return self._test_client
 
 
@@ -61,30 +60,35 @@ def test_perform_cleanup_cycle() -> None:
     domain_parts = tld_extract(validation_domain)
 
     dns_record = DnsRecord(
-        "TXT",
-        ttl=LoopiaAuthenticator.ttl,
-        data=validation_key
+        Authenticator.txt_record_type,
+        ttl=Authenticator.ttl,
+        rdata=validation_key
     )
 
     loopia_mock = MagicMock()
 
-    auth = LoopiaTestAuthenticator(loopia_mock)
+    auth = TestAuthenticator(loopia_mock)
 
     auth._perform(domain, validation_domain, validation_key)
 
     loopia_mock.add_zone_record.assert_called_with(
-        record=dns_record,
+        dns_record=dns_record,
         domain=domain_parts.registered_domain,
         subdomain=domain_parts.subdomain,
     )
     record_id = 20200305
     loopia_mock.get_zone_records.return_value = [
-        DnsRecord("TXT", id=record_id, ttl=auth.ttl, data=validation_key),
+        DnsRecord(
+            Authenticator.txt_record_type,
+            record_id=record_id,
+            ttl=auth.ttl,
+            rdata=validation_key,
+        ),
     ]
     auth._cleanup(domain, validation_domain, validation_key)
 
     loopia_mock.remove_zone_record.assert_called_with(
-        id=record_id,
+        record_id=record_id,
         domain=domain_parts.registered_domain,
         subdomain=domain_parts.subdomain,
     )

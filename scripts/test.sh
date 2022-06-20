@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 mkdir -p tmp/etc/
 mkdir -p tmp/log/
 mkdir -p tmp/run/
